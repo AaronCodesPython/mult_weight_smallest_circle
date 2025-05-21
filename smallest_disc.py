@@ -1,11 +1,11 @@
 import pygame
 import random
 import math
-NUM_POINTS = 16
+NUM_POINTS = 100
 NUM_POINTS_SELECT = 11
 WIDTH = 512
 HEIGHT = 512
-BORDER_LIMIT_X = 100
+BORDER_LIMIT_X = 50
 BORDER_LIMIT_Y = 100
 
 
@@ -32,9 +32,11 @@ class Point:
 pygame.init()
 font = pygame.font.SysFont("Arial", 8)
 font2 = pygame.font.SysFont("Arial", 38)
+font3 = pygame.font.SysFont("Arial", 12)
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
+
 running = True
 dt = 0
 
@@ -145,6 +147,7 @@ sel = []
 origin = Point(0,0,1)
 max_rad = 0
 done = False
+k = 0
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -171,13 +174,14 @@ while running:
             
         sel = []
         done = False
+        k = 0
         origin = Point(0,0,1)
         max_rad = 0
     if keys[pygame.K_t]:
         CUR = CUR + 1
         if(CUR %  BUF == 0 and not done):
             CUR = 0
-           
+            k+=1
             sel = get_Q(points)
             origin,max_rad_set,max_rad = get_circle(sel)
             outliers = 0
@@ -195,6 +199,12 @@ while running:
             pygame.draw.circle(screen, "red", pygame.Vector2(p.x,p.y), 12)
     pygame.draw.circle(screen, "black", (origin.x,origin.y), max_rad, 3)
     #print("orig:"+str(origin.x)+" "+str(origin.y))
+
+    text3 = font3.render("r:"+str(max_rad)+"   k:"+str(k), True, "black")
+    text_rect3 = text3.get_rect()
+    text_rect3.bottomright = (WIDTH - 10, HEIGHT - 10)  
+
+    screen.blit(text3,text_rect3)
     if done:
         text2 = font2.render("Done!", True, "black")
         text_rect2 = text.get_rect(center=(WIDTH/2, HEIGHT-60))
